@@ -13,7 +13,7 @@ squad['train'] = squad['train'].select(range(train_size))
 val_size = int(0.5 * len(squad['validation']))
 squad['validation'] = squad['validation'].select(range(val_size))
 
-
+# This function was partially based off this source: https://stackoverflow.com/questions/77484646/how-should-i-preprocess-this-dataset-for-performing-a-question-answering-task
 def preprocess_function(examples):
     questions = [q.strip() for q in examples["question"]]
     inputs = tokenizer(
