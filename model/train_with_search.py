@@ -7,7 +7,7 @@ model_name = "FacebookAI/roberta-base"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 squad = load_dataset('squad_v2')
 
-
+# This function was partially based off of: https://stackoverflow.com/questions/77484646/how-should-i-preprocess-this-dataset-for-performing-a-question-answering-task
 def preprocess_function(examples):
     questions = [q.strip() for q in examples["question"]]
     inputs = tokenizer(
