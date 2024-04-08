@@ -8,7 +8,6 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 
 squad = load_dataset('squad_v2')
 
-# Reduce the size of the training set to half
 train_size = int(0.5 * len(squad['train']))
 squad['train'] = squad['train'].select(range(train_size))
 val_size = int(0.5 * len(squad['validation']))
@@ -33,7 +32,6 @@ def preprocess_function(examples):
 
     for i, offset in enumerate(offset_mapping):
         answer = answers[i]
-        # Check if 'answer_start' list is empty, indicating no answer is present
         if not answer["answer_start"]:
             start_positions.append(0)
             end_positions.append(0)
@@ -72,24 +70,3 @@ def preprocess_function(examples):
 tokenized_squad = squad.map(preprocess_function, batched=True)
 
 model = AutoModelForQuestionAnswering.from_pretrained(model_name)
-
-training_args = TrainingArguments(
-    output_dir='./',          # output directory
-    num_train_epochs=3,              # number of training epochs
-    per_device_train_batch_size=16,  # batch size for training
-    per_device_eval_batch_size=64,   # batch size for evaluation
-    warmup_steps=500,                # number of warmup steps for learning rate scheduler
-    weight_decay=0.01,               # strength of weight decay
-    logging_dir='./logs',            # directory for storing logs
-    logging_steps=10,
-
-trainer = Trainer(
-    model=model,                         # the instantiated Transformers model to be trained
-    args=training_args,                  # training arguments, defined above
-    train_dataset=tokenized_squad['train'],   # training dataset
-    eval_dataset=tokenized_squad['validation'] # evaluation dataset
-)
-
-trainer.train()
-model.save_pretrained('./my_roberta_model')
-tokenizer.save_pretrained('./my_roberta_model')
